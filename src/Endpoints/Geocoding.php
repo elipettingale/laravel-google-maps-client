@@ -1,6 +1,6 @@
 <?php
 
-namespace EliPett\GoogleMapsClient\Services\Endpoints;
+namespace EliPett\GoogleMapsClient\Endpoints;
 
 use EliPett\GoogleMapsClient\Processors\ResponseProcessor;
 use GuzzleHttp\Client;
