@@ -2,8 +2,8 @@
 
 namespace EliPett\GoogleMapsClient\Services\Endpoints;
 
+use EliPett\GoogleMapsClient\Processors\ResponseProcessor;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 
 class Places
 {
@@ -29,39 +29,15 @@ class Places
             $uri .= "&{$key}={$value}";
         }
 
-        $request = $this->client->get($uri);
+        $response = $this->client->get($uri);
 
-        return $this->all($request);
+        return ResponseProcessor::all($response);
     }
 
     public function details(string $id): array
     {
-        $request = $this->client->get("details/json?key={$this->key}&placeid={$id}");
+        $response = $this->client->get("details/json?key={$this->key}&placeid={$id}");
 
-        return $this->all($request);
-    }
-
-    protected function all(ResponseInterface $request): array
-    {
-        $response = json_decode($request->getBody(), true);
-
-        if ($this->hasError($response)) {
-            $this->throwError($response);
-        }
-
-        return $response;
-    }
-
-    private function hasError(array $response): bool
-    {
-        return $response['status'] !== 'OK';
-    }
-
-    private function throwError(array $error): void
-    {
-        throw new \InvalidArgumentException(trans('googlemapsclient::messages.error.api', [
-            'status' => array_get($error, 'status'),
-            'message' => array_get($error, 'error_message')
-        ]));
+        return ResponseProcessor::all($response);
     }
 }
